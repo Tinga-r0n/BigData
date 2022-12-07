@@ -5,7 +5,14 @@
 package project.usermanagementcrud;
 
 
+import com.mongodb.ErrorCategory;
+import com.mongodb.MongoWriteException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import javax.swing.JOptionPane;
+import org.bson.Document;
 
 /**
  *
@@ -14,8 +21,9 @@ import javax.swing.JOptionPane;
 public class Registration extends javax.swing.JFrame {
     
     String value;
-
     
+
+    MongoClientConnection mc = new MongoClientConnection();
     public Registration() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -189,7 +197,7 @@ public class Registration extends javax.swing.JFrame {
         String mail = email.getText();
         String pass = String.valueOf(password.getPassword());
         
-
+insertData();
 
     JOptionPane.showMessageDialog(null, "Please wait for the admin to approve your registration. Thank you", "Successfuly registered!",
         JOptionPane.INFORMATION_MESSAGE);
@@ -198,6 +206,38 @@ new Login().setVisible(true);
   
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public void insertData(){
+       
+      
+      //Insert a document into the "characters" collection.
+              String uri = "mongodb://jane:janejane14@ac-qjm7xdg-shard-00-00.yshvdop.mongodb.net:27017,ac-qjm7xdg-shard-00-01.yshvdop.mongodb.net:27017,ac-qjm7xdg-shard-00-02.yshvdop.mongodb.net:27017/test?replicaSet=atlas-brfw5o-shard-0&ssl=true&authSource=admin";
+              MongoClient mongoClient = MongoClients.create(uri);
+              MongoDatabase database = mongoClient.getDatabase("UserManagement");
+              MongoCollection<Document> collection = database.getCollection("UserCollection");
+
+
+            Document mickeyMouse = new Document();
+           
+
+            mickeyMouse.append("_id", 4)
+                    .append("firstName", firstName.getText())
+                    .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","active");
+
+           
+
+            try {
+                collection.insertOne(mickeyMouse);
+              
+                System.out.println("Successfully inserted documents. \n");
+            } catch (MongoWriteException mwe) {
+                if (mwe.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {
+                   
+                    System.out.println("Document with that id already exists");
+                }
+            }
+    }
+    
+    
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
         this.dispose();
         new Login().setVisible(true);
