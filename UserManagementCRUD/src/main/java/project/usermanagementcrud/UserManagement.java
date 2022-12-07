@@ -4,9 +4,14 @@
  */
 package project.usermanagementcrud;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import org.bson.Document;
 
 
 /**
@@ -32,6 +38,8 @@ public class UserManagement extends javax.swing.JFrame {
     /**
      * Creates new form Users
      */
+    private MongoClient client;
+	private MongoCollection<Document> collection;
     public UserManagement() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -267,6 +275,7 @@ public class UserManagement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         String value = jComboBox1.getSelectedItem().toString();
         if (value.equals("to be approved")) {
