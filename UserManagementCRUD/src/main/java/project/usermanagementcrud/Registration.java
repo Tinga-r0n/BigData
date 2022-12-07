@@ -197,10 +197,11 @@ public class Registration extends javax.swing.JFrame {
         String mail = email.getText();
         String pass = String.valueOf(password.getPassword());
         
-insertData();
 
     JOptionPane.showMessageDialog(null, "Please wait for the admin to approve your registration. Thank you", "Successfuly registered!",
         JOptionPane.INFORMATION_MESSAGE);
+    insertData();
+
 this.dispose();
 new Login().setVisible(true);
   
@@ -210,8 +211,8 @@ new Login().setVisible(true);
        
       
       //Insert a document into the "characters" collection.
-              String uri = "mongodb://jane:janejane14@ac-qjm7xdg-shard-00-00.yshvdop.mongodb.net:27017,ac-qjm7xdg-shard-00-01.yshvdop.mongodb.net:27017,ac-qjm7xdg-shard-00-02.yshvdop.mongodb.net:27017/test?replicaSet=atlas-brfw5o-shard-0&ssl=true&authSource=admin";
-              MongoClient mongoClient = MongoClients.create(uri);
+      String uri = "mongodb://localhost:27017";   
+      MongoClient mongoClient = MongoClients.create(uri);
               MongoDatabase database = mongoClient.getDatabase("UserManagement");
               MongoCollection<Document> collection = database.getCollection("UserCollection");
 
@@ -219,7 +220,7 @@ new Login().setVisible(true);
             Document mickeyMouse = new Document();
            
 
-            mickeyMouse.append("_id", 4)
+            mickeyMouse
                     .append("firstName", firstName.getText())
                     .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","active");
 

@@ -4,6 +4,7 @@
  */
 package project.usermanagementcrud;
 
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -27,7 +28,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
-
+import com.mongodb.client.*;
+import com.mongodb.client.model.Filters.*;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -39,10 +43,12 @@ public class UserManagement extends javax.swing.JFrame {
      * Creates new form Users
      */
     private MongoClient client;
-	private MongoCollection<Document> collection;
+    private MongoCollection<Document> collection;
+
     public UserManagement() {
         initComponents();
         this.setLocationRelativeTo(null);
+        crudRead();
     }
 
     /**
@@ -79,7 +85,7 @@ public class UserManagement extends javax.swing.JFrame {
 
             },
             new String [] {
-                "User ID", "First Name", "Last Name", "Email", "Password", "Role", "Status"
+                "First Name", "Last Name", "Email", "Password", "Role", "Status"
             }
         ));
         jScrollPane2.setViewportView(jTable2);
@@ -254,6 +260,32 @@ public class UserManagement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void crudRead() {
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+        String uri = "mongodb://localhost:27017";
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+        MongoDatabase database = mongoClient.getDatabase("UserManagement");
+        MongoCollection<Document> collection = database.getCollection("UserCollection");
+        MongoCursor<Document> cursor = collection.find().iterator();
+        try {
+            while (cursor.hasNext()) {
+//                System.out.println(cursor.next().toJson());
+                Document obj = cursor.next();
+                String first = (String) obj.get("firstName");
+                String last = (String) obj.get("lastName");
+                String pass = (String) obj.get("password");
+                String email = (String) obj.get("email");
+                String role = (String) obj.get("role");
+                String status = (String) obj.get("status");
+
+                tm.addRow(new Object[]{first, last, email, pass,  role, status});
+            }
+        } finally {
+            cursor.close();
+            mongoClient.close();
+        }
+
+    }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         JTextField fn = new JTextField();
         JTextField ln = new JTextField();
@@ -270,27 +302,20 @@ public class UserManagement extends javax.swing.JFrame {
 
         int option = JOptionPane.showConfirmDialog(null, user, "Add Admin", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-           
 
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    
+
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         String value = jComboBox1.getSelectedItem().toString();
         if (value.equals("to be approved")) {
 
-           
-
         }
         if (value.equals("active")) {
 
-            
-
         }
         if (value.equals("inactive")) {
-
-           
 
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
@@ -303,13 +328,13 @@ public class UserManagement extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int row = jTable2.getSelectedRow();
         String id = jTable2.getModel().getValueAt(row, 0).toString();
-        
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         int row = jTable2.getSelectedRow();
         String id = jTable2.getModel().getValueAt(row, 0).toString();
-       
+
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -322,7 +347,6 @@ public class UserManagement extends javax.swing.JFrame {
 
         int option = JOptionPane.showConfirmDialog(null, role, "Change Role", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-         
 
         }
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -337,7 +361,6 @@ public class UserManagement extends javax.swing.JFrame {
 
         int option = JOptionPane.showConfirmDialog(null, role, "Change Password", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-           
 
         }
     }//GEN-LAST:event_jButton7ActionPerformed
@@ -347,7 +370,7 @@ public class UserManagement extends javax.swing.JFrame {
         String id = jTable2.getModel().getValueAt(row, 0).toString();
         String stat = jTable2.getModel().getValueAt(row, 6).toString();
         if (stat.equals("to be approved")) {
-         
+
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
@@ -356,7 +379,7 @@ public class UserManagement extends javax.swing.JFrame {
         String id = jTable2.getModel().getValueAt(row, 0).toString();
         String stat = jTable2.getModel().getValueAt(row, 6).toString();
         if (stat.equals("to be approved")) {
-           
+
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -368,7 +391,7 @@ public class UserManagement extends javax.swing.JFrame {
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         int row = jTable2.getSelectedRow();
         String id = jTable2.getModel().getValueAt(row, 0).toString();
-       
+
     }//GEN-LAST:event_jButton11ActionPerformed
 
     /**
@@ -385,16 +408,24 @@ public class UserManagement extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UserManagement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserManagement.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UserManagement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserManagement.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UserManagement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserManagement.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UserManagement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserManagement.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
