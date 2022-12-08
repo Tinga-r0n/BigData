@@ -5,40 +5,19 @@
 package project.usermanagementcrud;
 
 //import static com.mongodb.client.model.Filters.eq;
-import com.mongodb.DBObject;
 import com.mongodb.ErrorCategory;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.MongoWriteException;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.UnknownHostException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import org.bson.Document;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -333,8 +312,8 @@ public class UserManagement extends javax.swing.JFrame {
 //                    .append("firstName", firstName.getText())
 //                    .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","active");
 //
-//           
-        admin.append("firstName", fn.getText()).append("lastName", ln.getText()).append("email", e.getText()).append("password", pa.getText()).append("role", "admin").append("status", "active");
+//
+        admin.append("firstName", fn.getText()).append("lastName", ln.getText()).append("email", e.getText()).append("password", pa.getText()).append("role", "Admin").append("status", "active");
         try {
             collection.insertOne(admin);
 
@@ -361,11 +340,11 @@ public class UserManagement extends javax.swing.JFrame {
         if (option == JOptionPane.OK_OPTION) {
             DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
             tm.setRowCount(0);
+            JOptionPane.showMessageDialog(null, "Successfully added admin!", "Success", JOptionPane.INFORMATION_MESSAGE);
             crudInsert();
 
         }
     }//GEN-LAST:event_addAdminActionPerformed
-
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         String value = jComboBox1.getSelectedItem().toString();
@@ -461,6 +440,7 @@ public class UserManagement extends javax.swing.JFrame {
             String email = jTable2.getModel().getValueAt(row, 2).toString();
             crudDelete(email);
             tm.setRowCount(0);
+            JOptionPane.showMessageDialog(null, "Successfully removed user!", "Success", JOptionPane.INFORMATION_MESSAGE);
             crudRead();
         }
 
@@ -492,10 +472,10 @@ public class UserManagement extends javax.swing.JFrame {
             }
 
             tm.setRowCount(0);
+            JOptionPane.showMessageDialog(null, "Successfully disabled user!", "Success", JOptionPane.INFORMATION_MESSAGE);
             crudRead();
 
         }
-
 
     }//GEN-LAST:event_disableUserActionPerformed
 
@@ -533,12 +513,12 @@ public class UserManagement extends javax.swing.JFrame {
                 }
 
                 tm.setRowCount(0);
+                JOptionPane.showMessageDialog(null, "Successfully changed role!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 crudRead();
 
             }
 
         }
-
 
     }//GEN-LAST:event_changeRoleActionPerformed
 
@@ -576,12 +556,12 @@ public class UserManagement extends javax.swing.JFrame {
                 }
 
                 tm.setRowCount(0);
+                JOptionPane.showMessageDialog(null, "Successfully changed password!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 crudRead();
 
             }
 
         }
-
 
     }//GEN-LAST:event_changePassActionPerformed
 
@@ -615,6 +595,7 @@ public class UserManagement extends javax.swing.JFrame {
                 }
 
                 tm.setRowCount(0);
+                JOptionPane.showMessageDialog(null, "Approved user!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 crudRead();
 
             }
@@ -635,11 +616,11 @@ public class UserManagement extends javax.swing.JFrame {
                 String email = jTable2.getModel().getValueAt(row, 2).toString();
                 crudDelete(email);
                 tm.setRowCount(0);
+                JOptionPane.showMessageDialog(null, "Declined user", "Alert", JOptionPane.INFORMATION_MESSAGE);
                 crudRead();
             }
 
         }
-
 
     }//GEN-LAST:event_declineUserActionPerformed
 
@@ -675,6 +656,7 @@ public class UserManagement extends javax.swing.JFrame {
             }
 
             tm.setRowCount(0);
+            JOptionPane.showMessageDialog(null, "Successfully enabled user!", "Success", JOptionPane.INFORMATION_MESSAGE);
             crudRead();
 
         }
@@ -687,7 +669,7 @@ public class UserManagement extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
