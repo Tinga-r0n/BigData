@@ -278,6 +278,7 @@ public class UserManagement extends javax.swing.JFrame {
         com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
         MongoDatabase database = mongoClient.getDatabase("UserManagement");
         MongoCollection<Document> collection = database.getCollection("UserCollection");
+
         MongoCursor<Document> cursor = collection.find().iterator();
         try {
             while (cursor.hasNext()) {
@@ -365,19 +366,86 @@ public class UserManagement extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         String value = jComboBox1.getSelectedItem().toString();
-        if (value.equals("to be approved")) {
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+        String uri = "mongodb://localhost:27017";
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+        MongoDatabase database = mongoClient.getDatabase("UserManagement");
+        MongoCollection<Document> collection = database.getCollection("UserCollection");
+
+        if (value.equals("inactive")) {
+            Bson query = eq("status", "inactive");
+            MongoCursor<Document> cursor = collection.find(query).iterator();
+
+            try {
+                tm.setRowCount(0);
+                while (cursor.hasNext()) {
+//                System.out.println(cursor.next().toJson());
+                    Document obj = cursor.next();
+                    String first = (String) obj.get("firstName");
+                    String last = (String) obj.get("lastName");
+                    String pass = (String) obj.get("password");
+                    String email = (String) obj.get("email");
+                    String role = (String) obj.get("role");
+                    String status = (String) obj.get("status");
+
+                    tm.addRow(new Object[]{first, last, email, pass, role, status});
+                }
+            } finally {
+                cursor.close();
+                mongoClient.close();
+            }
 
         }
         if (value.equals("active")) {
+            Bson query = eq("status", "active");
+            MongoCursor<Document> cursor = collection.find(query).iterator();
+            try {
+                tm.setRowCount(0);
+                while (cursor.hasNext()) {
+//                System.out.println(cursor.next().toJson());
+                    Document obj = cursor.next();
+                    String first = (String) obj.get("firstName");
+                    String last = (String) obj.get("lastName");
+                    String pass = (String) obj.get("password");
+                    String email = (String) obj.get("email");
+                    String role = (String) obj.get("role");
+                    String status = (String) obj.get("status");
+
+                    tm.addRow(new Object[]{first, last, email, pass, role, status});
+                }
+            } finally {
+                cursor.close();
+                mongoClient.close();
+            }
 
         }
-        if (value.equals("inactive")) {
+        if (value.equals("to be approved")) {
+            Bson query = eq("status", "to be approved");
+            MongoCursor<Document> cursor = collection.find(query).iterator();
+            try {
+                tm.setRowCount(0);
+                while (cursor.hasNext()) {
+//                System.out.println(cursor.next().toJson());
+                    Document obj = cursor.next();
+                    String first = (String) obj.get("firstName");
+                    String last = (String) obj.get("lastName");
+                    String pass = (String) obj.get("password");
+                    String email = (String) obj.get("email");
+                    String role = (String) obj.get("role");
+                    String status = (String) obj.get("status");
+
+                    tm.addRow(new Object[]{first, last, email, pass, role, status});
+                }
+            } finally {
+                cursor.close();
+                mongoClient.close();
+            }
 
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
+        crudRead();
         jComboBox1.setSelectedItem("Select");
     }//GEN-LAST:event_jButton3ActionPerformed
 

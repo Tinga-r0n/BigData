@@ -221,7 +221,7 @@ new Login().setVisible(true);
 
             mickeyMouse
                     .append("firstName", firstName.getText())
-                    .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","active");
+                    .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","to be approved");
 
            
 
