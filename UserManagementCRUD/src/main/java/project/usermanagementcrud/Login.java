@@ -176,22 +176,29 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void findMatch() {
-        String uri = "mongodb://localhost:27017";
-        com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
-        MongoDatabase database = mongoClient.getDatabase("UserManagement");
-        MongoCollection<Document> collection = database.getCollection("UserCollection");
-        collection.find(eq("email", email.getText())).first();
-        Document result = collection.find(new Document("email", email.getText())).first();
-        System.out.println(result.isEmpty());
-        if (result.get("email").equals(email.getText()) && result.get("password").equals(String.valueOf(pass.getPassword()))) {
-            JOptionPane.showMessageDialog(null, "Successfully login!", "Alert", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
-            new UserManagement().setVisible(true);
+
+        try {
+            String uri = "mongodb://localhost:27017";
+            com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("UserManagement");
+            MongoCollection<Document> collection = database.getCollection("UserCollection");
+            collection.find(eq("email", email.getText())).first();
+            Document result = collection.find(new Document("email", email.getText())).first();
+            System.out.println(result.isEmpty());
+            if (result.get("email").equals(email.getText()) && result.get("password").equals(String.valueOf(pass.getPassword()))) {
+                JOptionPane.showMessageDialog(null, "Successfully login!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+                new UserManagement().setVisible(true);
 
 //                    new WelcomeJFrame(this.username.getText(), this.password.getText()).setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(null, "Incorrect credentials!", "Alert", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Incorrect credentials!", "Alert", JOptionPane.WARNING_MESSAGE);
 
+            }
+
+        } catch (Exception me) {
+//            System.err.println("Unable to update due to an error: " + me);
+            JOptionPane.showMessageDialog(null, "Incorrect credentials!", "Alert", JOptionPane.WARNING_MESSAGE);
         }
     }
 
