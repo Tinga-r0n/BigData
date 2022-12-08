@@ -345,6 +345,7 @@ public class UserManagement extends javax.swing.JFrame {
                 System.out.println("Document with that id already exists");
             }
         }
+        crudRead();
     }
     private void addAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminActionPerformed
 
@@ -358,6 +359,8 @@ public class UserManagement extends javax.swing.JFrame {
 
         int option = JOptionPane.showConfirmDialog(null, user, "Add Admin", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
+            DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+            tm.setRowCount(0);
             crudInsert();
 
         }
