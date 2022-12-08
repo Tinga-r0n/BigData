@@ -186,10 +186,15 @@ public class Login extends javax.swing.JFrame {
             Document result = collection.find(new Document("email", email.getText())).first();
             System.out.println(result.isEmpty());
             if (result.get("email").equals(email.getText()) && result.get("password").equals(String.valueOf(pass.getPassword()))) {
-                JOptionPane.showMessageDialog(null, "Successfully login!", "Alert", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose();
-                new UserManagement().setVisible(true);
+                if (result.get("role").equals("Admin")) {
+                    JOptionPane.showMessageDialog(null, "Successfully login!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
+                    new UserManagement().setVisible(true);
 
+                } else {
+                    JOptionPane.showMessageDialog(null, "Dili ka admin. You are not allowed! Mapriso ka!", "Alert", JOptionPane.WARNING_MESSAGE);
+
+                }
 //                    new WelcomeJFrame(this.username.getText(), this.password.getText()).setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Incorrect credentials!", "Alert", JOptionPane.WARNING_MESSAGE);
