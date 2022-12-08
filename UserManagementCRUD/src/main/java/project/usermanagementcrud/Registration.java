@@ -23,7 +23,6 @@ public class Registration extends javax.swing.JFrame {
     String value;
     
 
-    MongoClientConnection mc = new MongoClientConnection();
     public Registration() {
         initComponents();
         this.setLocationRelativeTo(null);

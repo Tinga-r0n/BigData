@@ -4,8 +4,12 @@
  */
 package project.usermanagementcrud;
 
+//import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.DBObject;
+import com.mongodb.ErrorCategory;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -29,7 +33,12 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters.*;
+import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -43,7 +52,10 @@ public class UserManagement extends javax.swing.JFrame {
      * Creates new form Users
      */
     private MongoClient client;
-    private MongoCollection<Document> collection;
+    JTextField fn = new JTextField();
+    JTextField ln = new JTextField();
+    JTextField e = new JTextField();
+    JTextField pa = new JTextField();
 
     public UserManagement() {
         initComponents();
@@ -63,18 +75,18 @@ public class UserManagement extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        addAdmin = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        removeUser = new javax.swing.JButton();
+        disableUser = new javax.swing.JButton();
+        changeRole = new javax.swing.JButton();
+        changePass = new javax.swing.JButton();
+        approveUser = new javax.swing.JButton();
+        declineUser = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
+        enableUser = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -90,11 +102,11 @@ public class UserManagement extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable2);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton2.setText("Add Admin");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        addAdmin.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        addAdmin.setText("Add Admin");
+        addAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                addAdminActionPerformed(evt);
             }
         });
 
@@ -114,51 +126,51 @@ public class UserManagement extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton4.setText("Remove User");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        removeUser.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        removeUser.setText("Remove User");
+        removeUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                removeUserActionPerformed(evt);
             }
         });
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton5.setText("Disable User");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        disableUser.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        disableUser.setText("Disable User");
+        disableUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                disableUserActionPerformed(evt);
             }
         });
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton6.setText("Change Role");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        changeRole.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        changeRole.setText("Change Role");
+        changeRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                changeRoleActionPerformed(evt);
             }
         });
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton7.setText("Change Password");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        changePass.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        changePass.setText("Change Password");
+        changePass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                changePassActionPerformed(evt);
             }
         });
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton8.setText("Approve User");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        approveUser.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        approveUser.setText("Approve User");
+        approveUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                approveUserActionPerformed(evt);
             }
         });
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton9.setText("Decline User");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        declineUser.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        declineUser.setText("Decline User");
+        declineUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                declineUserActionPerformed(evt);
             }
         });
 
@@ -170,11 +182,11 @@ public class UserManagement extends javax.swing.JFrame {
             }
         });
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        jButton11.setText("Enable User");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        enableUser.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        enableUser.setText("Enable User");
+        enableUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                enableUserActionPerformed(evt);
             }
         });
 
@@ -187,21 +199,21 @@ public class UserManagement extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(addAdmin)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton4)
+                        .addComponent(removeUser)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton5)
+                        .addComponent(disableUser)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton11)
+                        .addComponent(enableUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton6)
+                        .addComponent(changeRole)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton7)
+                        .addComponent(changePass)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(approveUser, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15)
-                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(declineUser, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
@@ -225,14 +237,14 @@ public class UserManagement extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removeUser, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(disableUser, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(changeRole, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(changePass, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(approveUser, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(declineUser, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(enableUser, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -278,7 +290,7 @@ public class UserManagement extends javax.swing.JFrame {
                 String role = (String) obj.get("role");
                 String status = (String) obj.get("status");
 
-                tm.addRow(new Object[]{first, last, email, pass,  role, status});
+                tm.addRow(new Object[]{first, last, email, pass, role, status});
             }
         } finally {
             cursor.close();
@@ -286,11 +298,54 @@ public class UserManagement extends javax.swing.JFrame {
         }
 
     }
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JTextField fn = new JTextField();
-        JTextField ln = new JTextField();
-        JTextField e = new JTextField();
-        JTextField pa = new JTextField();
+
+    public void crudDelete(String email) {
+        String uri = "mongodb://localhost:27017";
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+        MongoDatabase database = mongoClient.getDatabase("UserManagement");
+
+        MongoCollection<Document> collection = database.getCollection("UserCollection");
+
+        Bson query = eq("email", email);
+        try {
+            DeleteResult result = collection.deleteOne(query);
+//            System.out.println("Deleted document count: " + result.getDeletedCount());
+//                Bson filter = eq("email","sample@mail.com");
+//                collection.deleteOne(filter);
+        } catch (MongoException me) {
+            System.err.println("Unable to delete due to an error: " + me);
+        }
+    }
+
+    public void crudInsert() {
+
+        //Insert a document into the "characters" collection.
+        String uri = "mongodb://localhost:27017";
+        com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+        MongoDatabase database = mongoClient.getDatabase("UserManagement");
+        MongoCollection<Document> collection = database.getCollection("UserCollection");
+
+        Document admin = new Document();
+
+//
+//            mickeyMouse
+//                    .append("firstName", firstName.getText())
+//                    .append("lastName", lastName.getText()).append("email", email.getText()).append("password", String.valueOf(password.getPassword())).append("role", value).append("status","active");
+//
+//           
+        admin.append("firstName", fn.getText()).append("lastName", ln.getText()).append("email", e.getText()).append("password", pa.getText()).append("role", "admin").append("status", "active");
+        try {
+            collection.insertOne(admin);
+
+            System.out.println("Successfully inserted documents. \n");
+        } catch (MongoWriteException mwe) {
+            if (mwe.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {
+
+                System.out.println("Document with that id already exists");
+            }
+        }
+    }
+    private void addAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAdminActionPerformed
 
         Object[] user = {
             "First Name:", fn,
@@ -302,9 +357,10 @@ public class UserManagement extends javax.swing.JFrame {
 
         int option = JOptionPane.showConfirmDialog(null, user, "Add Admin", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
+            crudInsert();
 
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_addAdminActionPerformed
 
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -325,74 +381,233 @@ public class UserManagement extends javax.swing.JFrame {
         jComboBox1.setSelectedItem("Select");
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
+    private void removeUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeUserActionPerformed
 
-    }//GEN-LAST:event_jButton4ActionPerformed
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
+        if (jTable2.getSelectedRowCount() > 0) {
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+            crudDelete(email);
+            tm.setRowCount(0);
+            crudRead();
+        }
 
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_removeUserActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
-        JTextField ro = new JTextField();
+    private void disableUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disableUserActionPerformed
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
 
-        Object[] role = {
-            "Role:", ro,};
+        if (jTable2.getSelectedRowCount() > 0) {
 
-        int option = JOptionPane.showConfirmDialog(null, role, "Change Role", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+
+            String uri = "mongodb://localhost:27017";
+            com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("UserManagement");
+            MongoCollection<Document> collection = database.getCollection("UserCollection");
+            Document query = new Document().append("email", email);
+            Bson updates = Updates.combine(
+                    Updates.set("status", "inactive"));
+
+            UpdateOptions options = new UpdateOptions().upsert(true);
+            try {
+                UpdateResult result = collection.updateOne(query, updates, options);
+                System.out.println("Modified document count: " + result.getModifiedCount());
+                System.out.println("Upserted id: " + result.getUpsertedId()); // only contains a value when an upsert is performed
+            } catch (MongoException me) {
+                System.err.println("Unable to update due to an error: " + me);
+            }
+
+            tm.setRowCount(0);
+            crudRead();
 
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
-        JTextField pass = new JTextField();
 
-        Object[] role = {
-            "New Password:", pass,};
+    }//GEN-LAST:event_disableUserActionPerformed
 
-        int option = JOptionPane.showConfirmDialog(null, role, "Change Password", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
+    private void changeRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeRoleActionPerformed
+
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+
+        if (jTable2.getSelectedRowCount() > 0) {
+
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+
+            JTextField ro = new JTextField();
+
+            Object[] role = {
+                "Role:", ro,};
+
+            int option = JOptionPane.showConfirmDialog(null, role, "Change Role", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                String uri = "mongodb://localhost:27017";
+                com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+                MongoDatabase database = mongoClient.getDatabase("UserManagement");
+                MongoCollection<Document> collection = database.getCollection("UserCollection");
+                Document query = new Document().append("email", email);
+                Bson updates = Updates.combine(
+                        Updates.set("role", ro.getText()));
+
+                UpdateOptions options = new UpdateOptions().upsert(true);
+                try {
+                    UpdateResult result = collection.updateOne(query, updates, options);
+                    System.out.println("Modified document count: " + result.getModifiedCount());
+                    System.out.println("Upserted id: " + result.getUpsertedId()); // only contains a value when an upsert is performed
+                } catch (MongoException me) {
+                    System.err.println("Unable to update due to an error: " + me);
+                }
+
+                tm.setRowCount(0);
+                crudRead();
+
+            }
 
         }
-    }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
-        String stat = jTable2.getModel().getValueAt(row, 6).toString();
-        if (stat.equals("to be approved")) {
+
+    }//GEN-LAST:event_changeRoleActionPerformed
+
+    private void changePassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePassActionPerformed
+
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+
+        if (jTable2.getSelectedRowCount() > 0) {
+
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+            JTextField pass = new JTextField();
+
+            Object[] role = {
+                "New Password:", pass,};
+
+            int option = JOptionPane.showConfirmDialog(null, role, "Change Password", JOptionPane.OK_CANCEL_OPTION);
+
+            if (option == JOptionPane.OK_OPTION) {
+                String uri = "mongodb://localhost:27017";
+                com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+                MongoDatabase database = mongoClient.getDatabase("UserManagement");
+                MongoCollection<Document> collection = database.getCollection("UserCollection");
+                Document query = new Document().append("email", email);
+                Bson updates = Updates.combine(
+                        Updates.set("password", pass.getText()));
+
+                UpdateOptions options = new UpdateOptions().upsert(true);
+                try {
+                    UpdateResult result = collection.updateOne(query, updates, options);
+                    System.out.println("Modified document count: " + result.getModifiedCount());
+                    System.out.println("Upserted id: " + result.getUpsertedId()); // only contains a value when an upsert is performed
+                } catch (MongoException me) {
+                    System.err.println("Unable to update due to an error: " + me);
+                }
+
+                tm.setRowCount(0);
+                crudRead();
+
+            }
 
         }
-    }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
-        String stat = jTable2.getModel().getValueAt(row, 6).toString();
-        if (stat.equals("to be approved")) {
+
+    }//GEN-LAST:event_changePassActionPerformed
+
+    private void approveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approveUserActionPerformed
+
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+
+        if (jTable2.getSelectedRowCount() > 0) {
+
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+            String stat = jTable2.getModel().getValueAt(row, 5).toString();
+
+            if (stat.equals("to be approved")) {
+
+                String uri = "mongodb://localhost:27017";
+                com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+                MongoDatabase database = mongoClient.getDatabase("UserManagement");
+                MongoCollection<Document> collection = database.getCollection("UserCollection");
+                Document query = new Document().append("email", email);
+                Bson updates = Updates.combine(
+                        Updates.set("status", "active"));
+
+                UpdateOptions options = new UpdateOptions().upsert(true);
+                try {
+                    UpdateResult result = collection.updateOne(query, updates, options);
+                    System.out.println("Modified document count: " + result.getModifiedCount());
+                    System.out.println("Upserted id: " + result.getUpsertedId()); // only contains a value when an upsert is performed
+                } catch (MongoException me) {
+                    System.err.println("Unable to update due to an error: " + me);
+                }
+
+                tm.setRowCount(0);
+                crudRead();
+
+            }
 
         }
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_approveUserActionPerformed
+
+    private void declineUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_declineUserActionPerformed
+
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+
+        if (jTable2.getSelectedRowCount() > 0) {
+            int row = jTable2.getSelectedRow();
+            String stat = jTable2.getModel().getValueAt(row, 5).toString();
+
+            if (stat.equals("to be approved")) {
+
+                String email = jTable2.getModel().getValueAt(row, 2).toString();
+                crudDelete(email);
+                tm.setRowCount(0);
+                crudRead();
+            }
+
+        }
+
+
+    }//GEN-LAST:event_declineUserActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         this.dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_jButton10ActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        int row = jTable2.getSelectedRow();
-        String id = jTable2.getModel().getValueAt(row, 0).toString();
+    private void enableUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableUserActionPerformed
 
-    }//GEN-LAST:event_jButton11ActionPerformed
+        DefaultTableModel tm = (DefaultTableModel) jTable2.getModel();
+
+        if (jTable2.getSelectedRowCount() > 0) {
+
+            int row = jTable2.getSelectedRow();
+            String email = jTable2.getModel().getValueAt(row, 2).toString();
+
+            String uri = "mongodb://localhost:27017";
+            com.mongodb.client.MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("UserManagement");
+            MongoCollection<Document> collection = database.getCollection("UserCollection");
+            Document query = new Document().append("email", email);
+            Bson updates = Updates.combine(
+                    Updates.set("status", "active"));
+
+            UpdateOptions options = new UpdateOptions().upsert(true);
+            try {
+                UpdateResult result = collection.updateOne(query, updates, options);
+                System.out.println("Modified document count: " + result.getModifiedCount());
+                System.out.println("Upserted id: " + result.getUpsertedId()); // only contains a value when an upsert is performed
+            } catch (MongoException me) {
+                System.err.println("Unable to update due to an error: " + me);
+            }
+
+            tm.setRowCount(0);
+            crudRead();
+
+        }
+    }//GEN-LAST:event_enableUserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -441,20 +656,20 @@ public class UserManagement extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addAdmin;
+    private javax.swing.JButton approveUser;
+    private javax.swing.JButton changePass;
+    private javax.swing.JButton changeRole;
+    private javax.swing.JButton declineUser;
+    private javax.swing.JButton disableUser;
+    private javax.swing.JButton enableUser;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
+    private javax.swing.JButton removeUser;
     // End of variables declaration//GEN-END:variables
 }
